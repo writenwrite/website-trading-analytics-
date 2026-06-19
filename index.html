@@ -15,9 +15,12 @@
                 <span>Dashboard Analisa Trading</span>
             </div>
             <nav class="nav">
-                <button class="nav-btn active" data-category="crypto">Crypto</button>
-                <button class="nav-btn" data-category="forex">Forex</button>
-                <button class="nav-btn" data-category="stock">Saham</button>
+                <button class="nav-btn active" data-page="dashboard">Dashboard</button>
+                <button class="nav-btn" data-page="portfolio">Portfolio</button>
+                <button class="nav-btn" data-page="alerts">Alerts</button>
+                <button class="nav-btn" data-page="compare">Compare</button>
+                <button class="nav-btn" data-page="calculator">Calculator</button>
+                <button class="nav-btn" data-page="backtest">Backtest</button>
             </nav>
             <div class="search-box">
                 <input type="text" id="searchInput" placeholder="Cari simbol (contoh: BTCUSD, EURUSD, AAPL)">
@@ -205,6 +208,208 @@
                     </table>
                 </div>
             </section>
+
+            <!-- Portfolio Page -->
+            <section class="page-section" id="portfolioPage" style="display:none;">
+                <div class="page-header">
+                    <h2>Portfolio Tracker</h2>
+                    <button class="btn btn-primary" onclick="Portfolio.openAddModal()">+ Tambah Aset</button>
+                </div>
+                <div class="portfolio-summary" id="portfolioSummary">
+                    <div class="summary-card">
+                        <span class="summary-label">Total Value</span>
+                        <span class="summary-value" id="totalValue">$0.00</span>
+                    </div>
+                    <div class="summary-card">
+                        <span class="summary-label">Total P/L</span>
+                        <span class="summary-value" id="totalPL">$0.00</span>
+                    </div>
+                    <div class="summary-card">
+                        <span class="summary-label">24h Change</span>
+                        <span class="summary-value" id="totalChange">0.00%</span>
+                    </div>
+                </div>
+                <div class="portfolio-chart-container">
+                    <canvas id="portfolioChart"></canvas>
+                </div>
+                <div class="portfolio-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Aset</th>
+                                <th>Jumlah</th>
+                                <th>Harga Beli</th>
+                                <th>Harga Sekarang</th>
+                                <th>Value</th>
+                                <th>P/L</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="portfolioBody"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Alerts Page -->
+            <section class="page-section" id="alertsPage" style="display:none;">
+                <div class="page-header">
+                    <h2>Price Alerts</h2>
+                    <button class="btn btn-primary" onclick="Alerts.openAddModal()">+ Buat Alert</button>
+                </div>
+                <div class="alerts-list" id="alertsList"></div>
+            </section>
+
+            <!-- Compare Page -->
+            <section class="page-section" id="comparePage" style="display:none;">
+                <div class="page-header">
+                    <h2>Compare Assets</h2>
+                </div>
+                <div class="compare-controls">
+                    <div class="compare-inputs">
+                        <select id="compareAsset1" class="form-select">
+                            <option value="BTCUSD">BTC/USD</option>
+                            <option value="ETHUSD">ETH/USD</option>
+                            <option value="BNBUSD">BNB/USD</option>
+                            <option value="SOLUSD">SOL/USD</option>
+                            <option value="EURUSD">EUR/USD</option>
+                            <option value="GBPUSD">GBP/USD</option>
+                            <option value="AAPL">AAPL</option>
+                            <option value="MSFT">MSFT</option>
+                            <option value="GOOGL">GOOGL</option>
+                        </select>
+                        <span class="vs-badge">VS</span>
+                        <select id="compareAsset2" class="form-select">
+                            <option value="ETHUSD">ETH/USD</option>
+                            <option value="BTCUSD">BTC/USD</option>
+                            <option value="BNBUSD">BNB/USD</option>
+                            <option value="SOLUSD">SOL/USD</option>
+                            <option value="EURUSD">EUR/USD</option>
+                            <option value="GBPUSD">GBP/USD</option>
+                            <option value="AAPL">AAPL</option>
+                            <option value="MSFT">MSFT</option>
+                            <option value="GOOGL">GOOGL</option>
+                        </select>
+                        <button class="btn btn-primary" onclick="Compare.run()">Compare</button>
+                    </div>
+                </div>
+                <div class="compare-chart-container">
+                    <canvas id="compareChart"></canvas>
+                </div>
+                <div class="compare-table" id="compareTable"></div>
+            </section>
+
+            <!-- Calculator Page -->
+            <section class="page-section" id="calculatorPage" style="display:none;">
+                <div class="page-header">
+                    <h2>Trading Calculator</h2>
+                </div>
+                <div class="calculator-grid">
+                    <div class="calc-card">
+                        <h3>Position Size Calculator</h3>
+                        <div class="calc-form">
+                            <div class="form-group">
+                                <label>Account Balance ($)</label>
+                                <input type="number" id="calcBalance" value="10000" class="form-input">
+                            </div>
+                            <div class="form-group">
+                                <label>Risk Per Trade (%)</label>
+                                <input type="number" id="calcRisk" value="2" step="0.1" class="form-input">
+                            </div>
+                            <div class="form-group">
+                                <label>Entry Price ($)</label>
+                                <input type="number" id="calcEntry" value="43000" class="form-input">
+                            </div>
+                            <div class="form-group">
+                                <label>Stop Loss Price ($)</label>
+                                <input type="number" id="calcStopLoss" value="42000" class="form-input">
+                            </div>
+                            <button class="btn btn-primary" onclick="Calculator.calculatePosition()">Hitung</button>
+                            <div class="calc-result" id="positionResult"></div>
+                        </div>
+                    </div>
+                    <div class="calc-card">
+                        <h3>Risk/Reward Calculator</h3>
+                        <div class="calc-form">
+                            <div class="form-group">
+                                <label>Entry Price ($)</label>
+                                <input type="number" id="rrEntry" value="43000" class="form-input">
+                            </div>
+                            <div class="form-group">
+                                <label>Stop Loss ($)</label>
+                                <input type="number" id="rrStopLoss" value="42000" class="form-input">
+                            </div>
+                            <div class="form-group">
+                                <label>Take Profit ($)</label>
+                                <input type="number" id="rrTakeProfit" value="45000" class="form-input">
+                            </div>
+                            <button class="btn btn-primary" onclick="Calculator.calculateRR()">Hitung</button>
+                            <div class="calc-result" id="rrResult"></div>
+                        </div>
+                    </div>
+                    <div class="calc-card">
+                        <h3>Leverage Calculator</h3>
+                        <div class="calc-form">
+                            <div class="form-group">
+                                <label>Capital ($)</label>
+                                <input type="number" id="levCapital" value="1000" class="form-input">
+                            </div>
+                            <div class="form-group">
+                                <label>Leverage (x)</label>
+                                <input type="number" id="levLeverage" value="10" class="form-input">
+                            </div>
+                            <div class="form-group">
+                                <label>Entry Price ($)</label>
+                                <input type="number" id="levEntry" value="43000" class="form-input">
+                            </div>
+                            <div class="form-group">
+                                <label>Exit Price ($)</label>
+                                <input type="number" id="levExit" value="44000" class="form-input">
+                            </div>
+                            <button class="btn btn-primary" onclick="Calculator.calculateLeverage()">Hitung</button>
+                            <div class="calc-result" id="leverageResult"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Backtest Page -->
+            <section class="page-section" id="backtestPage" style="display:none;">
+                <div class="page-header">
+                    <h2>Backtesting</h2>
+                </div>
+                <div class="backtest-controls">
+                    <div class="form-group">
+                        <label>Simbol</label>
+                        <select id="backtestSymbol" class="form-select">
+                            <option value="BTCUSD">BTC/USD</option>
+                            <option value="ETHUSD">ETH/USD</option>
+                            <option value="BNBUSD">BNB/USD</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Strategi</label>
+                        <select id="backtestStrategy" class="form-select">
+                            <option value="ma_cross">MA Crossover</option>
+                            <option value="rsi">RSI Overbought/Oversold</option>
+                            <option value="macd">MACD Crossover</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Periode</label>
+                        <select id="backtestPeriod" class="form-select">
+                            <option value="30">30 Hari</option>
+                            <option value="90">90 Hari</option>
+                            <option value="180">180 Hari</option>
+                            <option value="365">1 Tahun</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" onclick="Backtest.run()">Jalankan Backtest</button>
+                </div>
+                <div class="backtest-results" id="backtestResults"></div>
+                <div class="backtest-chart-container">
+                    <canvas id="backtestChart"></canvas>
+                </div>
+            </section>
         </div>
     </main>
 
@@ -261,6 +466,96 @@
         </div>
     </div>
 
+    <!-- Add Portfolio Modal -->
+    <div class="modal-overlay" id="portfolioModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Tambah Aset ke Portfolio</h3>
+                <button class="modal-close" onclick="Portfolio.closeAddModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Simbol Aset</label>
+                    <select id="portfolioSymbol" class="form-select">
+                        <option value="BTCUSD">BTC/USD - Bitcoin</option>
+                        <option value="ETHUSD">ETH/USD - Ethereum</option>
+                        <option value="BNBUSD">BNB/USD - BNB</option>
+                        <option value="SOLUSD">SOL/USD - Solana</option>
+                        <option value="XRPUSD">XRP/USD - Ripple</option>
+                        <option value="ADAUSD">ADA/USD - Cardano</option>
+                        <option value="EURUSD">EUR/USD</option>
+                        <option value="GBPUSD">GBP/USD</option>
+                        <option value="AAPL">AAPL - Apple</option>
+                        <option value="MSFT">MSFT - Microsoft</option>
+                        <option value="GOOGL">GOOGL - Alphabet</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Jumlah (Quantity)</label>
+                    <input type="number" id="portfolioQty" value="0.1" step="0.001" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label>Harga Beli ($)</label>
+                    <input type="number" id="portfolioBuyPrice" value="43000" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label>Tanggal Beli</label>
+                    <input type="date" id="portfolioDate" class="form-input">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="Portfolio.closeAddModal()">Batal</button>
+                <button class="btn btn-primary" onclick="Portfolio.addAsset()">Tambah</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Alert Modal -->
+    <div class="modal-overlay" id="alertModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Buat Price Alert</h3>
+                <button class="modal-close" onclick="Alerts.closeAddModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Simbol</label>
+                    <select id="alertSymbol" class="form-select">
+                        <option value="BTCUSD">BTC/USD</option>
+                        <option value="ETHUSD">ETH/USD</option>
+                        <option value="BNBUSD">BNB/USD</option>
+                        <option value="SOLUSD">SOL/USD</option>
+                        <option value="EURUSD">EUR/USD</option>
+                        <option value="GBPUSD">GBP/USD</option>
+                        <option value="AAPL">AAPL</option>
+                        <option value="MSFT">MSFT</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Kondisi</label>
+                    <select id="alertCondition" class="form-select">
+                        <option value="above">Harga Di Atas</option>
+                        <option value="below">Harga Di Bawah</option>
+                        <option value="cross_up">Cross Up</option>
+                        <option value="cross_down">Cross Down</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Target Harga ($)</label>
+                    <input type="number" id="alertPrice" value="45000" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label>Pesan (Opsional)</label>
+                    <input type="text" id="alertMessage" placeholder="Contoh: Sell BTC" class="form-input">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="Alerts.closeAddModal()">Batal</button>
+                <button class="btn btn-primary" onclick="Alerts.addAlert()">Buat Alert</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Settings Button -->
     <button class="settings-btn" onclick="App.openSettings()" title="Pengaturan">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -278,6 +573,11 @@
     <script src="js/config.js"></script>
     <script src="js/api.js"></script>
     <script src="js/charts.js"></script>
+    <script src="js/portfolio.js"></script>
+    <script src="js/alerts.js"></script>
+    <script src="js/compare.js"></script>
+    <script src="js/calculator.js"></script>
+    <script src="js/backtest.js"></script>
     <script src="js/app.js"></script>
 </body>
 </html>

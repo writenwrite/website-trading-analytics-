@@ -1,6 +1,7 @@
 const App = {
     currentCategory: 'crypto',
     currentSymbol: 'BTCUSD',
+    currentPage: 'dashboard',
     data: {
         crypto: [],
         forex: [],
@@ -22,11 +23,12 @@ const App = {
         this.updateAnalysis();
         this.startRealTimeUpdates();
         this.updateConnectionStatus();
+        this.initFeatureModules();
     },
 
     bindEvents() {
         document.querySelectorAll('.nav-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => this.handleCategoryChange(e));
+            btn.addEventListener('click', (e) => this.handleNavigation(e));
         });
 
         document.querySelectorAll('.timeframe-btn').forEach(btn => {
@@ -37,6 +39,59 @@ const App = {
         document.getElementById('searchInput').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') this.handleSearch();
         });
+    },
+
+    handleNavigation(e) {
+        const page = e.target.dataset.page;
+        if (!page) return;
+
+        document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+        e.target.classList.add('active');
+
+        this.currentPage = page;
+        this.showPage(page);
+    },
+
+    showPage(page) {
+        const pages = ['portfolioPage', 'alertsPage', 'comparePage', 'calculatorPage', 'backtestPage'];
+        const mainContent = document.querySelector('.main .container');
+
+        pages.forEach(p => {
+            const el = document.getElementById(p);
+            if (el) el.style.display = 'none';
+        });
+
+        const dashboardSections = mainContent.querySelectorAll(':scope > section:not(.page-section), :scope > div');
+        dashboardSections.forEach(s => s.style.display = '');
+
+        switch (page) {
+            case 'dashboard':
+                break;
+            case 'portfolio':
+                document.getElementById('portfolioPage').style.display = 'block';
+                Portfolio.init();
+                break;
+            case 'alerts':
+                document.getElementById('alertsPage').style.display = 'block';
+                Alerts.init();
+                break;
+            case 'compare':
+                document.getElementById('comparePage').style.display = 'block';
+                Compare.init();
+                break;
+            case 'calculator':
+                document.getElementById('calculatorPage').style.display = 'block';
+                Calculator.init();
+                break;
+            case 'backtest':
+                document.getElementById('backtestPage').style.display = 'block';
+                Backtest.init();
+                break;
+        }
+    },
+
+    initFeatureModules() {
+        Alerts.requestNotificationPermission();
     },
 
     async loadInitialData() {
