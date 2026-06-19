@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TradingView Analysis - Dashboard Analisa Trading</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://s3.tradingview.com/tv.js"></script>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <h1>TradingView Analysis</h1>
+                <span>Dashboard Analisa Trading</span>
+            </div>
+            <nav class="nav">
+                <button class="nav-btn active" data-category="crypto">Crypto</button>
+                <button class="nav-btn" data-category="forex">Forex</button>
+                <button class="nav-btn" data-category="stock">Saham</button>
+            </nav>
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Cari simbol (contoh: BTCUSD, EURUSD, AAPL)">
+                <button id="searchBtn">Cari</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <!-- Market Overview -->
+            <section class="market-overview">
+                <h2>Market Overview</h2>
+                <div class="overview-cards" id="overviewCards">
+                    <!-- Dynamic content -->
+                </div>
+            </section>
+
+            <!-- Main Chart Section -->
+            <section class="chart-section">
+                <div class="chart-header">
+                    <h2 id="currentSymbol">BTCUSD - Bitcoin</h2>
+                    <div class="chart-controls">
+                        <button class="timeframe-btn active" data-tf="D">1D</button>
+                        <button class="timeframe-btn" data-tf="W">1W</button>
+                        <button class="timeframe-btn" data-tf="M">1M</button>
+                        <button class="timeframe-btn" data-tf="3M">3M</button>
+                        <button class="timeframe-btn" data-tf="12M">1Y</button>
+                    </div>
+                </div>
+                <div class="chart-container" id="tradingViewChart"></div>
+            </section>
+
+            <!-- Analysis Grid -->
+            <div class="analysis-grid">
+                <!-- Technical Analysis -->
+                <section class="analysis-card technical-analysis">
+                    <h3>Analisa Teknikal</h3>
+                    <div class="technical-summary" id="technicalSummary">
+                        <div class="signal strong-buy">
+                            <span class="signal-label">Signal</span>
+                            <span class="signal-value">Strong Buy</span>
+                        </div>
+                        <div class="indicators-grid">
+                            <div class="indicator">
+                                <span class="ind-label">RSI (14)</span>
+                                <span class="ind-value" id="rsiValue">65.42</span>
+                                <span class="ind-status neutral">Netral</span>
+                            </div>
+                            <div class="indicator">
+                                <span class="ind-label">MACD</span>
+                                <span class="ind-value" id="macdValue">0.0045</span>
+                                <span class="ind-status buy">Beli</span>
+                            </div>
+                            <div class="indicator">
+                                <span class="ind-label">MA20</span>
+                                <span class="ind-value" id="ma20Value">$42,150</span>
+                                <span class="ind-status buy">Di Atas</span>
+                            </div>
+                            <div class="indicator">
+                                <span class="ind-label">MA50</span>
+                                <span class="ind-value" id="ma50Value">$41,800</span>
+                                <span class="ind-status buy">Di Atas</span>
+                            </div>
+                            <div class="indicator">
+                                <span class="ind-label">MA200</span>
+                                <span class="ind-value" id="ma200Value">$39,500</span>
+                                <span class="ind-status buy">Di Atas</span>
+                            </div>
+                            <div class="indicator">
+                                <span class="ind-label">Bollinger</span>
+                                <span class="ind-value" id="bollingerValue">Atas Tengah</span>
+                                <span class="ind-status neutral">Netral</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Fundamental Analysis -->
+                <section class="analysis-card fundamental-analysis">
+                    <h3>Analisa Fundamental</h3>
+                    <div class="fundamental-data" id="fundamentalData">
+                        <div class="fund-item">
+                            <span class="fund-label">Market Cap</span>
+                            <span class="fund-value" id="marketCap">$832.5B</span>
+                        </div>
+                        <div class="fund-item">
+                            <span class="fund-label">Volume 24h</span>
+                            <span class="fund-value" id="volume24h">$28.3B</span>
+                        </div>
+                        <div class="fund-item">
+                            <span class="fund-label">24h Change</span>
+                            <span class="fund-value positive" id="change24h">+2.45%</span>
+                        </div>
+                        <div class="fund-item">
+                            <span class="fund-label">7d Change</span>
+                            <span class="fund-value positive" id="change7d">+5.12%</span>
+                        </div>
+                        <div class="fund-item">
+                            <span class="fund-label">30d Change</span>
+                            <span class="fund-value negative" id="change30d">-3.28%</span>
+                        </div>
+                        <div class="fund-item">
+                            <span class="fund-label">ATH</span>
+                            <span class="fund-value" id="ath">$69,045</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Market Sentiment -->
+                <section class="analysis-card sentiment-analysis">
+                    <h3>Sentimen Pasar</h3>
+                    <div class="sentiment-gauge" id="sentimentGauge">
+                        <div class="gauge-container">
+                            <div class="gauge-label">Fear & Greed Index</div>
+                            <div class="gauge-value" id="gaugeValue">72</div>
+                            <div class="gauge-status">Greed</div>
+                            <div class="gauge-bar">
+                                <div class="gauge-fill" style="width: 72%"></div>
+                            </div>
+                        </div>
+                        <div class="sentiment-factors">
+                            <div class="factor">
+                                <span>Volatilitas</span>
+                                <span class="factor-value high">Tinggi</span>
+                            </div>
+                            <div class="factor">
+                                <span>Momentum</span>
+                                <span class="factor-value medium">Sedang</span>
+                            </div>
+                            <div class="factor">
+                                <span>Volume</span>
+                                <span class="factor-value high">Tinggi</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- News & Events -->
+                <section class="analysis-card news-section">
+                    <h3>Berita & Analisa</h3>
+                    <div class="news-list" id="newsList">
+                        <div class="news-item">
+                            <span class="news-time">2 jam lalu</span>
+                            <span class="news-title">Bitcoin Testing Key Resistance Level at $44,000</span>
+                            <span class="news-source">TradingView</span>
+                        </div>
+                        <div class="news-item">
+                            <span class="news-time">4 jam lalu</span>
+                            <span class="news-title">Fed Meeting Minutes Could Impact Crypto Markets</span>
+                            <span class="news-source">Bloomberg</span>
+                        </div>
+                        <div class="news-item">
+                            <span class="news-time">6 jam lalu</span>
+                            <span class="news-title">Institutional Investors Increase BTC Holdings</span>
+                            <span class="news-source">CoinDesk</span>
+                        </div>
+                        <div class="news-item">
+                            <span class="news-time">8 jam lalu</span>
+                            <span class="news-title">Technical Analysis: Bullish Pattern Forming on Daily Chart</span>
+                            <span class="news-source">TradingView</span>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Watchlist -->
+            <section class="watchlist-section">
+                <h3>Watchlist</h3>
+                <div class="watchlist-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Simbol</th>
+                                <th>Harga</th>
+                                <th>24h Change</th>
+                                <th>Volume</th>
+                                <th>Market Cap</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="watchlistBody">
+                            <!-- Dynamic content -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 TradingView Analysis Dashboard. Data dari TradingView & CoinGecko API</p>
+        </div>
+    </footer>
+
+    <!-- Settings Modal -->
+    <div class="modal-overlay" id="settingsModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Pengaturan API</h3>
+                <button class="modal-close" onclick="App.closeSettings()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Alpha Vantage API Key (untuk Forex & Saham Real-time)</label>
+                    <input type="text" id="apiKeyInput" placeholder="Masukkan API Key Anda" class="form-input">
+                    <small class="form-help">
+                        Dapatkan API Key gratis di: 
+                        <a href="https://www.alphavantage.co/support/#api-key" target="_blank">alphavantage.co</a>
+                        <br>Klik "Request an API Key" → Isi form → Anda akan mendapatkan key instant.
+                    </small>
+                </div>
+                <div class="form-group">
+                    <label>Status Koneksi</label>
+                    <div class="connection-info">
+                        <div class="status-item">
+                            <span class="status-label">Crypto (Binance):</span>
+                            <span class="status-value" id="binanceStatus">Connecting...</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label">Forex/Stock (Alpha Vantage):</span>
+                            <span class="status-value" id="avStatus">Not Configured</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Auto Refresh Interval</label>
+                    <select id="refreshInterval" class="form-select">
+                        <option value="10000">10 Detik</option>
+                        <option value="30000" selected>30 Detik</option>
+                        <option value="60000">1 Menit</option>
+                        <option value="300000">5 Menit</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="App.closeSettings()">Batal</button>
+                <button class="btn btn-primary" onclick="App.saveSettings()">Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Button -->
+    <button class="settings-btn" onclick="App.openSettings()" title="Pengaturan">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+        </svg>
+    </button>
+
+    <!-- Connection Status Toast -->
+    <div class="connection-toast" id="connectionToast">
+        <span class="toast-icon"></span>
+        <span class="toast-message"></span>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/charts.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
